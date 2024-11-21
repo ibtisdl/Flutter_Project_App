@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/screens/home.page.dart';
 import 'package:flutterproject/screens/login.page.dart';
+import 'package:flutterproject/screens/register.page.dart';
 
 main() {
   runApp(MyApp());
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
-        '/home': (Context) => HomePage(),
+        '/home': (context) => HomePage(),
+        '/register': (context) => RegisterPage(),
       },
     );
   }
