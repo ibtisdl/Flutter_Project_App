@@ -113,8 +113,16 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     'Login',
-                    style: TextStyle(color: Colors.white),
-                  ))
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+              const SizedBox(height: 10),
+              SizedBox(height: 20),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
+                  child: Text('Don\'t have an account? Register here!'))
             ],
           ),
         ),
