@@ -71,6 +71,7 @@ class HomePage extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.settings),
+              trailing: Icon(Icons.arrow_forward),
               title: Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
@@ -95,6 +96,7 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Text(
           "Welcome to the home Page",
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: 40, color: Colors.indigo),
         ),
       ),
