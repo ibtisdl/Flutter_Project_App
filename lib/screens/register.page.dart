@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +15,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _passwordVisible = false;
 
@@ -44,6 +47,30 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'Passwords do not match!';
     }
     return null;
+  }
+
+  Future SignUp() async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim());
+      if (userCredential.user != null) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code.contains("weak-password")) {
+        Fluttertoast.showToast(
+            msg: "Votre mot de passe doit contenir au moins 6 caractères");
+      }
+      if (e.code.contains("invalid-email")) {
+        Fluttertoast.showToast(msg: "Votre email n'a pas un format valide");
+      }
+      if (e.code.contains("email-already-in-use")) {
+        Fluttertoast.showToast(msg: "Votre email est déjà utilisé");
+      }
+      print(e);
+    }
   }
 
   @override
@@ -133,14 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing registration')),
-                    );
-                    Navigator.pushNamed(context, '/home');
-                  }
-                },
+                onPressed: SignUp,
                 child: const Text(
                   'Register',
                   style: TextStyle(
@@ -150,7 +170,9 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/login');
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pushNamed(context, "/login");
+                  }
                 },
                 child: const Text('Already have an account? Login here!'),
               ),

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,6 +34,58 @@ class _LoginPageState extends State<LoginPage> {
     }
     if (value.length < 6) return 'Password must be at least 6 characters!';
     return null;
+  }
+
+  Future<void> _signIn() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _mailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign-in successful!')),
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case 'user-not-found':
+          message = 'No user found for that email.';
+          break;
+        case 'wrong-password':
+          message = 'Wrong password provided for that user.';
+          break;
+        case 'invalid-email':
+          message = 'The email address is badly formatted.';
+          break;
+        case 'user-disabled':
+          message = 'This user account has been disabled.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many attempts. Please try again later.';
+          break;
+        default:
+          message = 'An error occurred. Try again.';
+      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } on SocketException catch (e) {
+      String message = "Network error: Please check your internet connection";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      print("SocketException: $e");
+    } catch (e) {
+      String message = "An unexpected error occured";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      print("Unkown error:$e");
+    }
   }
 
   @override
@@ -112,14 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Processing login')),
-                      );
-                      Navigator.pushNamed(context, '/home');
-                    }
-                  },
+                  onPressed: _signIn,
                   child: Text(
                     'Login',
                     style: TextStyle(
@@ -132,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.pushNamed(context, "/register");
                     },
                     child: Text(
                       'Don\'t have an account? Register here!',
