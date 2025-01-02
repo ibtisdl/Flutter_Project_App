@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterproject/firebase_options.dart';
 import 'package:flutterproject/screens/home.page.dart';
 import 'package:flutterproject/screens/login.page.dart';
+import 'package:flutterproject/screens/profile.page.dart';
 import 'package:flutterproject/screens/register.page.dart';
 
 Future<void> main() async {
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
         '/register': (context) => RegisterPage(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
